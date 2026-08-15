@@ -18,6 +18,7 @@ public class TotalSessionsAnalysisTest {
 
         assertEquals(0, result.getValue());
     }
+    
     @Test
     @DisplayName("Должен возвращать количество сессий в непустом списке")
     void shouldReturnSessionsCount() {
