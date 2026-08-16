@@ -6,6 +6,22 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ChronotypeAnalysis implements Function<List<SleepingSession>, SleepAnalysisResult> {
+
+    private static final LocalTime OWL_BEDTIME_THRESHOLD =
+            LocalTime.of(23, 0);
+
+    private static final LocalTime OWL_WAKE_UP_THRESHOLD =
+            LocalTime.of(9, 0);
+
+    private static final LocalTime LARK_BEDTIME_THRESHOLD =
+            LocalTime.of(22, 0);
+
+    private static final LocalTime LARK_WAKE_UP_THRESHOLD =
+            LocalTime.of(7, 0);
+
+    private static final LocalTime NIGHT_END_TIME =
+            LocalTime.of(6, 0);
+
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sessions) {
         List<Chronotype> chronotypes = sessions.stream()
@@ -38,10 +54,10 @@ public class ChronotypeAnalysis implements Function<List<SleepingSession>, Sleep
         LocalTime sleepStartTime = session.getStartTime().toLocalTime();
         LocalTime wakeUpTime = session.getEndTime().toLocalTime();
 
-        boolean fallsAsleepAfterTwentyThree = sleepStartTime.isAfter(LocalTime.of(23, 0));
-        boolean wakesUpAfterNine = wakeUpTime.isAfter(LocalTime.of(9, 0));
-        boolean fallsAsleepBeforeTwentyTwo = sleepStartTime.isBefore(LocalTime.of(22, 0));
-        boolean wakesUpBeforeSeven = wakeUpTime.isBefore(LocalTime.of(7, 0));
+        boolean fallsAsleepAfterTwentyThree = sleepStartTime.isAfter(OWL_BEDTIME_THRESHOLD);
+        boolean wakesUpAfterNine = wakeUpTime.isAfter(OWL_WAKE_UP_THRESHOLD);
+        boolean fallsAsleepBeforeTwentyTwo = sleepStartTime.isBefore(LARK_BEDTIME_THRESHOLD);
+        boolean wakesUpBeforeSeven = wakeUpTime.isBefore(LARK_WAKE_UP_THRESHOLD);
 
         if (fallsAsleepAfterTwentyThree && wakesUpAfterNine) {
             return Chronotype.OWL;
@@ -56,7 +72,7 @@ public class ChronotypeAnalysis implements Function<List<SleepingSession>, Sleep
         boolean crossesMidnight =
                 !session.getStartTime().toLocalDate().equals(session.getEndTime().toLocalDate());
         boolean startsBeforeSix =
-                session.getStartTime().toLocalTime().isBefore(LocalTime.of(6, 0));
+                session.getStartTime().toLocalTime().isBefore(NIGHT_END_TIME);
 
         return crossesMidnight || startsBeforeSix;
     }

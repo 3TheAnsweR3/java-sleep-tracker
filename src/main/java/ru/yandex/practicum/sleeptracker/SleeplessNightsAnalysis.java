@@ -11,7 +11,7 @@ public class SleeplessNightsAnalysis implements Function<List<SleepingSession>, 
     @Override
     public SleepAnalysisResult apply(List<SleepingSession> sessions) {
         if (sessions.isEmpty()) {
-            return new SleepAnalysisResult("Количество бессонных ночей", 0L);
+            return createResult(0L);
         }
         LocalDateTime firstSessionStart = sessions.get(0).getStartTime();
         LocalDate firstNightDate = firstSessionStart.toLocalDate();
@@ -36,6 +36,10 @@ public class SleeplessNightsAnalysis implements Function<List<SleepingSession>, 
                 .count();
         long sleeplessNights = totalNights - nightsWithSleep;
 
+        return createResult(sleeplessNights);
+    }
+
+    private SleepAnalysisResult createResult(long sleeplessNights) {
         return new SleepAnalysisResult("Количество бессонных ночей", sleeplessNights);
     }
 
